@@ -2,7 +2,7 @@ module plic_wb_tb.sv ();
     // PLIC configuration.
     localparam sources          = 16;
     localparam targets          = 1;
-    localparam priorities       = 8;
+    localparam priorities       = 16;
     localparam pending_requests = 4;
 
     // PLIC inputs.
