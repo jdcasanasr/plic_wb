@@ -1,3 +1,5 @@
+`timescale 1ns / 1ns
+
 module plic_wb_tb ();
     // PLIC configuration.
     localparam sources          = 16;
@@ -10,7 +12,7 @@ module plic_wb_tb ();
 
     // These definitions are copied from plic_core.
     localparam sources_bits     = $clog2(sources + 1);
-    localparam priority_bits    = $clog2(priorities);
+    //localparam priority_bits    = $clog2(priorities);
 
     // PLIC inputs.
     logic                       rst_nr;
@@ -33,22 +35,32 @@ module plic_wb_tb ();
 
     initial
         begin
-            #0  clk_r   = '1;
-                rst_nr  = '1;
+            #0      clk_r   = '1;
+                    rst_nr  = '1;
 
-                src_r   = '0;   // No interrupt requests.
-                el_r    = '1;   // Edge-sensitive inputs.
+                    src_r   = '0;   // No interrupt requests.
+                    el_r    = '1;   // Edge-sensitive inputs.
 
-                for (int i = 0; i < targets; i++)
-                    for (int j = 0; j < sources; j++)
-                        ie_r[i][j] = '1; // All interrupts are enabled.
+                    for (int i = 0; i < targets; i++)
+                        for (int j = 0; j < sources; j++)
+                            ie_r[i][j] = '1; // All interrupts are enabled.
 
-                for (int i = 0; i < targets; i++)
-                    for (int j = 0; j < sources; j++)
-                        ipriority_r[i][j] = j + 'd1; // Assign priorities in device order.
+                    for (int i = 0; i < targets; i++)
+                        for (int j = 0; j < sources; j++)
+                            ipriority_r[i][j] = j + 'd1; // Assign priorities in device order.
 
-            #5  rst_nr  = '0;
-            #5  rst_nr  = '1;
+            #5      rst_nr  = '0;
+            #5      rst_nr  = '1;
+
+            #40     ;
+            #20     src_r[5]        = 'd1;
+            #20     claim_r[0]      = 'd1;
+            #5      claim_r[0]      = 'd0;
+            #100    complete_r[0]   = 'd1;
+            #5      complete_r[0]   = 'd0;
+
+            #20     ;
+            #20     $stop;
         end
 
     always
@@ -69,18 +81,18 @@ module plic_wb_tb ();
         .rst_n              (rst_nr),
         .clk                (clk_r),
 
-        .src                (src_w),
-        .el                 (el_w),
+        .src                (src_r),
+        .el                 (el_r),
         .ip                 (ip_w),
 
-        .ie                 (ie_w),
-        .ipriority          (ipriority_w),
-        .threshold          (threshold_w),
+        .ie                 (ie_r),
+        .ipriority          (ipriority_r),
+        .threshold          (threshold_r),
 
         .ireq               (ireq_w),
         .id                 (id_w),
-        .claim              (claim_w),
-        .complete           (complete_w)
+        .claim              (claim_r),
+        .complete           (complete_r)
     );
 
 endmodule

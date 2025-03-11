@@ -1,3 +1,4 @@
+transcript
 docs/build
 quartus/db
 quartus/incremental_db
@@ -5,3 +6,4 @@ quartus/*.qws
 quartus/output_files
 rtl/verilog/core/*.bak
 questa/work
+questa/*.wlf
