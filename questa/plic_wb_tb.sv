@@ -2,7 +2,10 @@ module plic_wb_tb ();
     // PLIC configuration.
     localparam sources          = 16;
     localparam targets          = 1;
-    localparam priorities       = 16;
+    
+    // How can I make this a constant expression?
+    //localparam priorities       = 16;
+
     localparam pending_requests = 4;
 
     // These definitions are copied from plic_core.
@@ -36,27 +39,13 @@ module plic_wb_tb ();
                 src_r   = '0;   // No interrupt requests.
                 el_r    = '1;   // Edge-sensitive inputs.
 
-                for (int i = 0; i < targets; i = i + 1)
-                    for (int j = 0; j < sources; j = j + 1)
+                for (int i = 0; i < targets; i++)
+                    for (int j = 0; j < sources; j++)
                         ie_r[i][j] = '1; // All interrupts are enabled.
 
-                ipriority_r[0][0]     = 'd1;
-                ipriority_r[0][1]     = 'd2;
-                ipriority_r[0][2]     = 'd3;
-                ipriority_r[0][3]     = 'd4;
-                ipriority_r[0][4]     = 'd5;
-                ipriority_r[0][5]     = 'd6;
-                ipriority_r[0][6]     = 'd7;
-                ipriority_r[0][7]     = 'd8;
-                ipriority_r[0][8]     = 'd9;
-                ipriority_r[0][9]     = 'd10;
-                ipriority_r[0][10]    = 'd11;
-                ipriority_r[0][11]    = 'd12;
-                ipriority_r[0][12]    = 'd13;
-                ipriority_r[0][13]    = 'd14;
-                ipriority_r[0][14]    = 'd15;
-                ipriority_r[0][15]    = 'd16;
-
+                for (int i = 0; i < targets; i++)
+                    for (int j = 0; j < sources; j++)
+                        ipriority_r[i][j] = j + 'd1; // Assign priorities in device order.
 
             #5  rst_nr  = '0;
             #5  rst_nr  = '1;
@@ -66,13 +55,16 @@ module plic_wb_tb ();
         #10 clk_r = ~clk_r;
 
     // Module Instances.
-    plic_core plic_core_instance
+    plic_core
     #(
         .SOURCES            (sources),
         .TARGETS            (targets),
-        .PRIORITIES         (priorites),
+        .PRIORITIES         (16),
         .MAX_PENDING_COUNT  (pending_requests)
     )
+
+    plic_core_instance
+
     (
         .rst_n              (rst_nr),
         .clk                (clk_r),
