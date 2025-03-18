@@ -1,5 +1,7 @@
 `timescale 1ns / 1ns
 
+// Note: Interrupt request responds in two clock cycles
+
 module plic_wb_tb ();
     // PLIC configuration.
     localparam sources          = 16;
@@ -11,7 +13,7 @@ module plic_wb_tb ();
     localparam pending_requests = 4;
 
     // These definitions are copied from plic_core.
-    localparam sources_bits     = $clog2(sources + 1);
+    localparam sources_bits     = $clog2(sources);
     //localparam priority_bits    = $clog2(priorities);
 
     // PLIC inputs.
@@ -33,38 +35,54 @@ module plic_wb_tb ();
     logic [targets - 1:0]       ireq_w;
     logic [sources_bits - 1:0]  id_w [targets];
 
+    integer seed = 42;
+
     initial
         begin
-            #0      clk_r   = '1;
-                    rst_nr  = '1;
+            #0      rst_nr  = '1;
+                    clk_r   = '1;
 
                     src_r   = '0;   // No interrupt requests.
                     el_r    = '1;   // Edge-sensitive inputs.
 
-                    for (int i = 0; i < targets; i++)
-                        for (int j = 0; j < sources; j++)
+                    for(int i = 0; i < targets; i++)
+                        for(int j = 0; j < sources; j++)
                             ie_r[i][j] = '1; // All interrupts are enabled.
 
-                    for (int i = 0; i < targets; i++)
-                        for (int j = 0; j < sources; j++)
-                            ipriority_r[i][j] = j + 'd1; // Assign priorities in device order.
+                    for(int i = 0; i < sources; i++)
+                        ipriority_r[i] = i + 'd1; // Assign priorities in device order.
 
-            #5      rst_nr  = '0;
-            #5      rst_nr  = '1;
+                    for(int i = 0; i < targets; i++)
+                        threshold_r[i] = '0;
 
-            #40     ;
-            #20     src_r[5]        = 'd1;
-            #20     claim_r[0]      = 'd1;
-            #5      claim_r[0]      = 'd0;
-            #100    complete_r[0]   = 'd1;
-            #5      complete_r[0]   = 'd0;
+                    for(int i = 0; i < targets; i++)
+                        claim_r[i] = '0;
+
+                    for(int i = 0; i < targets; i++)
+                        complete_r[i] = '0;
+
+            #5      rst_nr          = '0;
+            #5      rst_nr          = '1;
 
             #20     ;
-            #20     $stop;
+            #500    $stop;
         end
 
     always
         #10 clk_r = ~clk_r;
+
+    always
+        #20 src_r[15:0] = $random(seed);
+
+    always @ (ireq_w)
+        if(|ireq_w > 0)
+            begin
+                #20 claim_r     = '1;
+                #20 claim_r     = '0;
+
+                #40 complete_r  = '1;
+                #20 complete_r  = '0;
+            end
 
     // Module Instances.
     plic_core

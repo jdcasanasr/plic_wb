@@ -4,28 +4,36 @@ vlog ../rtl/verilog/core/plic_priority_index.sv
 vlog ../rtl/verilog/core/plic_target.sv
 vlog ../rtl/verilog/core/plic_gateway.sv
 vlog ../rtl/verilog/core/plic_cell.sv
-vlog ../rtl/verilog/core/plic_core.sv
+vlog ../rtl/verilog/core/plic_core.sv +acc=rnbp
 
 # Compile testbench.
-vlog plic_wb_tb.sv
+vlog plic_wb_tb.sv +acc=rnbp
 
 # Perform unary tests.
 vsim plic_wb_tb
 
 # Add signals to window.
-add wave -position insertpoint  \
-sim:/plic_wb_tb/rst_nr \
-sim:/plic_wb_tb/clk_r \
-sim:/plic_wb_tb/src_r \
-sim:/plic_wb_tb/el_r \
-sim:/plic_wb_tb/ie_r \
-sim:/plic_wb_tb/ipriority_r \
-sim:/plic_wb_tb/threshold_r \
-sim:/plic_wb_tb/claim_r \
-sim:/plic_wb_tb/complete_r \
-sim:/plic_wb_tb/ip_w \
-sim:/plic_wb_tb/ireq_w \
-sim:/plic_wb_tb/id_w
+add wave -noupdate -divider {Input Ports}
+add wave -noupdate /plic_wb_tb/plic_core_instance/rst_n
+add wave -noupdate /plic_wb_tb/plic_core_instance/clk
+add wave -noupdate /plic_wb_tb/plic_core_instance/src
+add wave -noupdate /plic_wb_tb/plic_core_instance/el
+add wave -noupdate /plic_wb_tb/plic_core_instance/ie
+add wave -noupdate /plic_wb_tb/plic_core_instance/ipriority
+add wave -noupdate /plic_wb_tb/plic_core_instance/threshold
+add wave -noupdate /plic_wb_tb/plic_core_instance/claim
+add wave -noupdate /plic_wb_tb/plic_core_instance/complete
 
+add wave -noupdate -divider {Output Ports}
+add wave -noupdate /plic_wb_tb/plic_core_instance/ip
+add wave -noupdate /plic_wb_tb/plic_core_instance/ireq
+add wave -noupdate /plic_wb_tb/plic_core_instance/id
+
+add wave -noupdate -divider {Internal Signals}
+add wave -noupdate /plic_wb_tb/plic_core_instance/id_array
+add wave -noupdate /plic_wb_tb/plic_core_instance/pr_array
+add wave -noupdate /plic_wb_tb/plic_core_instance/id_claimed
+add wave -noupdate /plic_wb_tb/plic_core_instance/claim_array
+add wave -noupdate /plic_wb_tb/plic_core_instance/complete_array
 
 run -all
