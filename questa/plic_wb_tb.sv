@@ -72,7 +72,7 @@ module plic_wb_tb ();
         #10 clk_r = ~clk_r;
 
     always
-        #20 src_r[15:0] = $random(seed);
+        #20 src_r[15:0] = $random(seed) | ip_w;
 
     always @ (ireq_w)
         if(|ireq_w > 0)
