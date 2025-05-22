@@ -16,6 +16,21 @@ vlog rtl/verilog/core/plic_core.sv
 vlog bench/verilog/test.sv
 vlog bench/verilog/testbench_top.sv
 
-vsim -suppress vopt-13219 work.testbench_top
+vsim -suppress vopt-13219 -voptargs="+acc" work.testbench_top 
+#vsim work.testbench_top
+
+add wave -position insertpoint  \
+sim:/testbench_top/dut/plic_core_inst/rst_n \
+sim:/testbench_top/dut/plic_core_inst/clk \
+sim:/testbench_top/dut/plic_core_inst/src \
+sim:/testbench_top/dut/plic_core_inst/el \
+sim:/testbench_top/dut/plic_core_inst/ip \
+sim:/testbench_top/dut/plic_core_inst/ie \
+sim:/testbench_top/dut/plic_core_inst/ipriority \
+sim:/testbench_top/dut/plic_core_inst/threshold \
+sim:/testbench_top/dut/plic_core_inst/ireq \
+sim:/testbench_top/dut/plic_core_inst/id \
+sim:/testbench_top/dut/plic_core_inst/claim \
+sim:/testbench_top/dut/plic_core_inst/complete
 
 run -all

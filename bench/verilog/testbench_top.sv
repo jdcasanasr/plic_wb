@@ -32,9 +32,9 @@
 /////////////////////////////////////////////////////////////////////
 
 module testbench_top;
-  parameter SOURCES           = 35; //Number of interrupt sources
-  parameter TARGETS           = 4;  //Number of interrupt targets
-  parameter PRIORITIES        = 7;  //Number of priority levels
+  parameter SOURCES           = 16; //Number of interrupt sources
+  parameter TARGETS           = 1;  //Number of interrupt targets
+  parameter PRIORITIES        = 16;  //Number of priority levels
   parameter MAX_PENDING_COUNT = 8;  //Number of 'event' counts
   parameter HAS_THRESHOLD     = 1;  //Has 'Priority' Threshold?
   parameter HAS_CONFIG_REG    = 1;  //Has 'config' register?
