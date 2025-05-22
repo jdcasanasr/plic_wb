@@ -20,6 +20,13 @@ vsim -suppress vopt-13219 -voptargs="+acc" work.testbench_top
 #vsim work.testbench_top
 
 add wave -position insertpoint  \
+sim:/testbench_top/dut/plic_core_inst/SOURCES \
+sim:/testbench_top/dut/plic_core_inst/TARGETS \
+sim:/testbench_top/dut/plic_core_inst/PRIORITIES \
+sim:/testbench_top/dut/plic_core_inst/MAX_PENDING_COUNT \
+sim:/testbench_top/dut/plic_core_inst/SOURCES_BITS \
+sim:/testbench_top/dut/plic_core_inst/PRIORITY_BITS
+
 sim:/testbench_top/dut/plic_core_inst/rst_n \
 sim:/testbench_top/dut/plic_core_inst/clk \
 sim:/testbench_top/dut/plic_core_inst/src \
